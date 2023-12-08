@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "evchargestation-optimizer"
+version = "0.1.0"
+description = "Uses machine learning optimization techniques and the Google Maps API to find the ideal location for new electric vehicle charging infrastructure"
+authors = ["Ryan Rickerts <ryan@deepsearising.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+google-maps-places = "^0.1.6"
+google-maps-routing = "^0.6.3"
+google-api-core = "^2.15.0"
+pandas = "^2.1.4"
+numpy = "^1.26.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
