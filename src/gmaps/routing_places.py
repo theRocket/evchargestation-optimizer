@@ -3,7 +3,7 @@ from google.maps import routing_v2
 from google.api_core.client_options import ClientOptions
 from dotenv import dotenv_values
 
-class GMaps:
+class GMapClient:
     def __init__(self):
         config = dotenv_values(".env")
         # get API Key from .env
@@ -87,7 +87,8 @@ class GMaps:
         request = places_v1.GetPlaceRequest(
             name="places/" + place_id
         )
-        fieldMask = "formattedAddress,displayName,types,primaryType,location"
+        # evChargeOptions not always returning data
+        fieldMask = "formattedAddress,displayName,types,primaryType,location,evChargeOptions"
 
         # Make the request
         response = client.get_place(request=request, metadata=[("x-goog-fieldmask",fieldMask)])

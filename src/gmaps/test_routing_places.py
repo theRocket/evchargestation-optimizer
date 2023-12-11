@@ -1,8 +1,8 @@
-from routing_places import GMaps
+from routing_places import GMapClient
 
 def test_search_nearby():
     # need a mock here
-    my_home_loc = GMaps()
+    my_home_loc = GMapClient()
     result = my_home_loc.search_nearby(2.0)
     assert(len(result.places) > 0)
     place_closest = result.places[0]
