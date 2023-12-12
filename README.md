@@ -79,13 +79,14 @@ The AFDC has an [interactive map](https://afdc.energy.gov/fuels/electricity_loca
 
 #### Installation of Python Packages
 
-Uses [Poetry](https://python-poetry.org/docs/basic-usage/) for dependency management. See a good write-up to justify why I chose this on [Medium here](https://pub.towardsai.net/forget-pip-conda-requirements-txt-use-poetry-instead-and-thank-me-later-226a0bc38a56).
+Uses [Poetry](https://python-poetry.org/docs/basic-usage/) for dependency management (a good write-up to justify why I chose Poetry is on [Medium here](https://pub.towardsai.net/forget-pip-conda-requirements-txt-use-poetry-instead-and-thank-me-later-226a0bc38a56)).
 
-Then you can run a sample script to fetch some nearby places like so:
+First install the required libraries (Poetry sets up its own virtualenv) then you can run a sample script to fetch some nearby places like so:
 ```python
+poetry install
 poetry run python src/main.py
 ```
-Run the tests (note: API calls still not mocked, so requests count against billable limits)
+Tests can be run like so (note: API calls still not mocked, so requests count against billable limits):
 ```python
 poetry run pytest
 ```

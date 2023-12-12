@@ -8,6 +8,7 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
+google-cloud-storage = "^2.14.0"
 google-maps-places = "^0.1.6"
 google-maps-routing = "^0.6.3"
 google-api-core = "^2.15.0"
