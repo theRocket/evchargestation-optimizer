@@ -1,7 +1,19 @@
 from gmaps.routing_places import GMapClient
+from gcloud.storage import GCSClient
+import pandas as pd
+from io import BytesIO
 # Examples to run as scripts
 # search_result = search_nearby(my_home_loc, 2.0)
 if __name__ == "__main__":
+    # get csv data from Cloud Storage
+    my_storage = GCSClient()
+    # maybe too large?
+    my_data_inmem = my_storage.download_blob_into_memory('strava.csv')
+    csvStringIO = BytesIO(my_data_inmem)
+    df = pd.read_csv(csvStringIO, sep=",")
+    print(df.head())
+
+    # do map stuff
     my_gmap_client = GMapClient()
     search_loc = my_gmap_client.home_loc
     # override with, ex: {'latitude':47.4281926, 'longitude':-120.3719613}
