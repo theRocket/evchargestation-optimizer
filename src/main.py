@@ -7,16 +7,16 @@ from io import BytesIO
 if __name__ == "__main__":
     # get csv data from Cloud Storage
     my_storage = GCSClient()
-    # maybe too large?
-    my_data_inmem = my_storage.download_blob_into_memory('strava.csv')
+    # start with small test data file
+    my_data_inmem = my_storage.download_blob_into_memory('wipeout.csv')
     csvStringIO = BytesIO(my_data_inmem)
     df = pd.read_csv(csvStringIO, sep=",")
-    print(df.head())
+    get_a_loc=df[['position_lat_degrees','position_long_degrees']].iloc[0]
 
     # do map stuff
     my_gmap_client = GMapClient()
-    search_loc = my_gmap_client.home_loc
-    # override with, ex: {'latitude':47.4281926, 'longitude':-120.3719613}
+    # search_loc = my_gmap_client.home_loc
+    search_loc = {'latitude': get_a_loc.position_lat_degrees, 'longitude': get_a_loc.position_long_degrees}
     radius = 1.0
     print(f'Searching nearest EV charging stations in {str(radius)} km radius from {search_loc}')
     distance = my_gmap_client.find_closest_station(radius, search_loc) # could accept default lat/lng from init

@@ -4,6 +4,36 @@
 
 This project uses machine learning optimization techniques and the Google Maps API to find the ideal location for new electric vehicle charging infrastructure.
 
+## Sample Script Run
+An example in `src/main.py` after loading lat/long values from a .csv file in Google Cloud Storage into a Pandas dataframe
+```python
+    # get csv data from Cloud Storage
+    my_storage = GCSClient()
+    my_data_inmem = my_storage.download_blob_into_memory('wipeout.csv')
+    csvStringIO = BytesIO(my_data_inmem)
+    df = pd.read_csv(csvStringIO, sep=",")
+    get_a_loc=df[['position_lat_degrees','position_long_degrees']].iloc[0]
+
+    # find the closest EV station
+    my_gmap_client = GMapClient()
+    search_loc = {'latitude': get_a_loc.position_lat_degrees, 'longitude': get_a_loc.position_long_degrees}
+    radius = 1.0
+    print(f'Searching nearest EV charging stations in {str(radius)} km radius from {search_loc}')
+    distance = my_gmap_client.find_closest_station(radius, search_loc) # could accept default lat/lng from init
+    print(f'Distance to nearest station: {str(distance/1000)} km')
+```
+The output after running `main.py`:
+```
+❯ poetry run python src/main.py
+Searching nearest EV charging stations in 1.0 km radius from {'latitude': 42.28036805056036, 'longitude': -83.74072722159326}
+Distance to nearest station: 0.968 km
+```
+Verifying this route directly by putting in the same lat/lng values and asking for directions to "ev station":
+
+![Google Maps Ann Arbor](assets/img/gmaps_route_AnnArbor_toChargepoint.png)
+
+We see that 0.968 km matches the web result of 0.6 miles. Note also it appears to be a city hall building (useful later for searching for alternate EV charging sites).
+
 ## Data Sources
 Starting data points come from several sources:
 
