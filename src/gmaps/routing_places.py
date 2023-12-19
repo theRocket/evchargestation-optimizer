@@ -14,7 +14,7 @@ class GMapClient:
         self.home_loc = {'latitude': float(config['MY_LAT']), 'longitude': float(config['MY_LONG'])}
         self.home_id = {'placeId':config['MY_PLACE_ID']}
 
-        self.fieldSet = {"id", "displayName", "formattedAddress", "location"}
+        self.fieldSet = {"id", "displayName", "formattedAddress", "location", "types"}
         # initialize to place types dictionary (provide empty list if invalid key provided)
         self.ev_site_types: Dict(str, List[str]) = defaultdict(list)
         # build with all but existing EV Charging stations
@@ -77,7 +77,7 @@ class GMapClient:
             # choose which fields to return (no whitespace, comma separator)
             fieldMask = "routes.distanceMeters" # may need these later: routes.duration, routes.polyline.encodedPolyline
             response = client.compute_routes(request=request ,metadata=[("x-goog-fieldmask",fieldMask)])
-            return response.routes[0].distance_meters
+            return {'id': place.id, 'distance': response.routes[0].distance_meters}
 
 
     def search_nearby(self, rad, lat_lng = None, place_type = None):
@@ -103,8 +103,6 @@ class GMapClient:
             # build an array from the built-in site types we are seeking
             for x in self.ev_site_types.values():
                 loc_types.extend(x)
-            # need to know what types we found
-            self.fieldSet.add("types")
         #else:
             # build for all?
         request = places_v1.SearchNearbyRequest(
@@ -131,12 +129,8 @@ class GMapClient:
         request = places_v1.GetPlaceRequest(
             name="places/" + place_id
         )
+        self.fieldSet.add("types")
         fieldMask = ",".join(self.fieldSet) # no whitespace allowed
 
         # Make the request
-        response = client.get_place(request=request, metadata=[("x-goog-fieldmask",fieldMask)])
-
-        # Handle the response
-        if 'electric_vehicle_charging_station' in response.types:
-            print('EV Charging Station: ' + response.display_name.text + ': ' + response.formatted_address)
-        return response
+        return client.get_place(request=request, metadata=[("x-goog-fieldmask",fieldMask)])

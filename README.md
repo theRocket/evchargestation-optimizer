@@ -27,6 +27,29 @@ The output after running `main.py`:
 ❯ poetry run python src/main.py
 Searching nearest EV charging stations in 1.0 km radius from {'latitude': 42.28036805056036, 'longitude': -83.74072722159326}
 Distance to nearest station: 0.968 km
+Place Types: ['electric_vehicle_charging_station', 'point_of_interest', 'establishment']
+EV Charging Station: ChargePoint Charging Station: 301 E Huron St, Ann Arbor, MI 48104, USA
+connector_count: 8
+connector_aggregation {
+  type_: EV_CONNECTOR_TYPE_CCS_COMBO_1
+  max_charge_rate_kw: 125
+  count: 4
+  available_count: 1
+  out_of_service_count: 0
+  availability_last_update_time {
+    seconds: 1703029800
+  }
+}
+connector_aggregation {
+  type_: EV_CONNECTOR_TYPE_CHADEMO
+  max_charge_rate_kw: 125
+  count: 4
+  available_count: 1
+  out_of_service_count: 0
+  availability_last_update_time {
+    seconds: 1703029800
+  }
+}
 ```
 Verifying this route directly by putting in the same lat/lng values and asking for directions to "ev station":
 

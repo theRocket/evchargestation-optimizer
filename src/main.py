@@ -15,12 +15,19 @@ if __name__ == "__main__":
 
     # do map stuff
     my_gmap_client = GMapClient()
-    # search_loc = my_gmap_client.home_loc
-    search_loc = {'latitude': get_a_loc.position_lat_degrees, 'longitude': get_a_loc.position_long_degrees}
+    # search_loc = my_gmap_client.home_loc # default
+    # search_loc = {'latitude': 33.1422946, 'longitude': -107.2596707} # downtown Truth or Consequences, NM
+    search_loc = {'latitude': get_a_loc.position_lat_degrees, 'longitude': get_a_loc.position_long_degrees} # from above
     radius = 1.0
     print(f'Searching nearest EV charging stations in {str(radius)} km radius from {search_loc}')
-    distance = my_gmap_client.find_closest_station(radius, search_loc) # could accept default lat/lng from init
-    print(f'Distance to nearest station: {str(distance/1000)} km')
+    place = my_gmap_client.find_closest_station(radius, search_loc) # could accept default lat/lng from init
+    print(f'Distance to nearest station (ID: {place['id']}): {str(place['distance']/1000)} km')
+    ev_place = my_gmap_client.get_place_by_id(place['id'])
+    # Check the response types
+    print(f'Place Types: {ev_place.types}')
+    if 'electric_vehicle_charging_station' in ev_place.types:
+        print('EV Charging Station: ' + ev_place.display_name.text + ': ' + ev_place.formatted_address)
+        print(ev_place.ev_charge_options)
 
     # parse out the JSON and count results
     # (optional) pass each Place ID to get more info
