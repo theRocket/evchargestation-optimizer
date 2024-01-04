@@ -12,12 +12,12 @@ An example in `src/main.py` after loading lat/long values from a .csv file in Go
     my_data_inmem = my_storage.download_blob_into_memory('wipeout.csv')
     csvStringIO = BytesIO(my_data_inmem)
     df = pd.read_csv(csvStringIO, sep=",")
-    get_a_loc=df[['position_lat_degrees','position_long_degrees']].iloc[0]
+    get_a_loc=df[['ERS_LATITUDE','ERS_LONGITUDE']].iloc[0]
 
-    # find the closest EV station
+    # do map stuff
     my_gmap_client = GMapClient()
-    search_loc = {'latitude': get_a_loc.position_lat_degrees, 'longitude': get_a_loc.position_long_degrees}
-    radius = 1.0
+    search_loc = {'latitude': get_a_loc.ERS_LATITUDE, 'longitude': get_a_loc.ERS_LONGITUDE} # from above
+    radius = 10.0
     print(f'Searching nearest EV charging stations in {str(radius)} km radius from {search_loc}')
     distance = my_gmap_client.find_closest_station(radius, search_loc) # could accept default lat/lng from init
     print(f'Distance to nearest station: {str(distance/1000)} km')
