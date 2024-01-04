@@ -8,17 +8,17 @@ if __name__ == "__main__":
     # get csv data from Cloud Storage
     my_storage = GCSClient()
     # start with small test data file
-    my_data_inmem = my_storage.download_blob_into_memory('wipeout.csv')
+    my_data_inmem = my_storage.download_blob_into_memory('AAA_OutofChargeWA_Nov22-Nov23.csv')
     csvStringIO = BytesIO(my_data_inmem)
     df = pd.read_csv(csvStringIO, sep=",")
-    get_a_loc=df[['position_lat_degrees','position_long_degrees']].iloc[0]
+    get_a_loc=df[['ERS_LATITUDE','ERS_LONGITUDE']].iloc[0]
 
     # do map stuff
     my_gmap_client = GMapClient()
     # search_loc = my_gmap_client.home_loc # default
     # search_loc = {'latitude': 33.1422946, 'longitude': -107.2596707} # downtown Truth or Consequences, NM
-    search_loc = {'latitude': get_a_loc.position_lat_degrees, 'longitude': get_a_loc.position_long_degrees} # from above
-    radius = 1.0
+    search_loc = {'latitude': get_a_loc.ERS_LATITUDE, 'longitude': get_a_loc.ERS_LONGITUDE} # from above
+    radius = 10.0
     print(f'Searching nearest EV charging stations in {str(radius)} km radius from {search_loc}')
     place = my_gmap_client.find_closest_station(radius, search_loc) # could accept default lat/lng from init
     print(f'Distance to nearest station (ID: {place['id']}): {str(place['distance']/1000)} km')

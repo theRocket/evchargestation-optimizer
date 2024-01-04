@@ -22,40 +22,48 @@ An example in `src/main.py` after loading lat/long values from a .csv file in Go
     distance = my_gmap_client.find_closest_station(radius, search_loc) # could accept default lat/lng from init
     print(f'Distance to nearest station: {str(distance/1000)} km')
 ```
-The output after running `main.py`:
+Data elements include: `[VEH_YEAR, VEH_MAKE, VEH_MODEL, ERS_LATITUDE, ERS_LONGITUDE, ERS_NEAR_CITY, TOW_DEST_LAT, TOW_DEST_LON]`
+The first sample data element is:
+```python
+['2018', 'NISSAN', 'LEAF', 47.61453	-117.42536, 'Spokane WA', 47.66351, -117.41239]
+```
+The next-nearest station search algorithm runs in `main.py` looking in 10km radius and outputs the following:
 ```
 ❯ poetry run python src/main.py
-Searching nearest EV charging stations in 1.0 km radius from {'latitude': 42.28036805056036, 'longitude': -83.74072722159326}
-Distance to nearest station: 0.968 km
+Searching nearest EV charging stations in 10.0 km radius from {'latitude': 47.61453, 'longitude': -117.42536}
+Distance to nearest station (ID: ChIJAQBMiKYYnlQREbjQNFL7cVI): 14.441 km
 Place Types: ['electric_vehicle_charging_station', 'point_of_interest', 'establishment']
-EV Charging Station: ChargePoint Charging Station: 301 E Huron St, Ann Arbor, MI 48104, USA
-connector_count: 8
+EV Charging Station: EV Connect Charging Station: 2904 E Sprague Ave, Spokane, WA 99202, USA
+connector_count: 2
 connector_aggregation {
   type_: EV_CONNECTOR_TYPE_CCS_COMBO_1
-  max_charge_rate_kw: 125
-  count: 4
-  available_count: 1
+  max_charge_rate_kw: 180
+  count: 1
+  available_count: 0
   out_of_service_count: 0
   availability_last_update_time {
-    seconds: 1703029800
+    seconds: 1704335400
   }
 }
 connector_aggregation {
   type_: EV_CONNECTOR_TYPE_CHADEMO
-  max_charge_rate_kw: 125
-  count: 4
-  available_count: 1
+  max_charge_rate_kw: 100
+  count: 1
+  available_count: 0
   out_of_service_count: 0
   availability_last_update_time {
-    seconds: 1703029800
+    seconds: 1704335400
   }
 }
 ```
+
 Verifying this route directly by putting in the same lat/lng values and asking for directions to "ev station":
 
-![Google Maps Ann Arbor](assets/img/gmaps_route_AnnArbor_toChargepoint.png)
+![Google Maps Spokane WA](assets/img/gmaps_route_SpokaneOutofcharge.png)
 
-We see that 0.968 km matches the web result of 0.6 miles. Note also it appears to be a city hall building (useful later for searching for alternate EV charging sites).
+We see that 14.441 km matches the web result of 9.0 miles. Note also it appears to be a public library (useful later for searching for alternate EV charging sites).
+
+![Google Maps Hive](assets/img/gmaps_route_SpokaneChargepoint.png)
 
 ## Data Sources
 Starting data points come from several sources:
@@ -69,9 +77,9 @@ This data was selected first, specifically targeting places where their customer
 
 Since this data costs $200 per state and year of data, I have purchased this out-of-pocket and placed the files in a secure S3 bucket only my AWS API credentials can access.
 
-Data elements include: `[VEH_YEAR, VEH_MAKE, VEH_MODEL, ERS_LATITUDE, ERS_LONGITUDE, ERS_NEAR_CITY, TOW_DEST_LAT, TOW_DEST_LON]`
+Using the vehicle make and model, we will also determine the charge connector type and validate that against the nearby charging station available connector types, as provided in the Google Maps API response.
 
-Using the vehicle make and model, we will determine the charge connector type and validate that against the nearby charging station available connector types, as provided in the Google Maps API (see below).
+A 2018 Nissan Leaf in the example above does support the CHAdeMO connector. However 14.4 km may have been too far for this driver to reach on low charge.
 
 #### [EVRI eRoadMap](https://eroadmap.epri.com/)
 
