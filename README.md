@@ -4,7 +4,7 @@
 
 This project uses machine learning optimization techniques and the Google Maps API to find the ideal location for new electric vehicle charging infrastructure.
 
-According to government data cited in a late Dec 2023 [article in the WSJ](https://www.wsj.com/business/autos/investors-sour-on-ev-charging-companies-f6318bfb), the U.S. has around 159,000 public charging ports now at 60,000 locations. The supply required to meet EV demand over the next 5 years varies from a tripling to a 10x increase:
+According to government data cited in a late Dec 2023 [article in the WSJ](https://www.wsj.com/business/autos/investors-sour-on-ev-charging-companies-f6318bfb), the U.S. has around 159,000 public charging ports now at 60,000 locations. The estimated supply needed to meet EV demand in the next 6 years varies from a tripling to a 10x increase:
 > President Biden aims to have 500,000 public chargers in the ground by 2030. Consulting firm McKinsey estimates that around 1.5 million public chargers would be needed by then if half of car sales are electric.
 
 Also cited in this article are the difficulties EV charging companies have remaining economically viable during this classic "chicken-and-egg" problem of supplying the EV charging infrastructure needed in advance of demand for EVs in order to reduce range anxiety and consumers' reluctance to commit to an EV purchase. However, the capital investment required to build out charging locations before consumers are buying electricity places a heavy burden on the for-profit EVSE enterprise. Placing this infrastructure in strategically optimized locations could help them acheive return on their investment in the near term.
@@ -70,6 +70,11 @@ We see that `14.441 km` matches the web result of `9.0 mi`. Note also it appears
 
 ![Google Maps Hive](assets/img/gmaps_route_SpokaneChargepoint.png)
 
+
+Using the vehicle make and model, we will also determine the charge connector type and validate that against the nearby charging station available connector types, as provided in the Google Maps API response.
+
+A 2018 Nissan Leaf in the example above does support the CHAdeMO connector. However 14.4 km may have been too far for this driver to reach on low charge. Incompatible connectors may be used to eliminate close range charging options.
+
 ## Data Sources
 Optimum EV Charging Infrastructure locations comes from several sources.
 
@@ -80,11 +85,7 @@ The first task is to select the starting point from which to target a new neares
 #### [AAA EVs Out of Charge data](https://autoinsights.aaa.biz/products/evs-out-of-charge)
 This data was selected first, specifically targeting places where their customers have had to call for assistance due to an out-of-charge incident. 
 
-Since this data costs $200 per state and year of data, I have purchased this out-of-pocket and placed the files in a secure S3 bucket only my AWS API credentials can access.
-
-Using the vehicle make and model, we will also determine the charge connector type and validate that against the nearby charging station available connector types, as provided in the Google Maps API response.
-
-A 2018 Nissan Leaf in the example above does support the CHAdeMO connector. However 14.4 km may have been too far for this driver to reach on low charge.
+Since this data costs $200 per state and year of data, I have purchased this out-of-pocket and placed the files in a private bucket only my Google Cloud credentials can access.
 
 #### [EVRI eRoadMap](https://eroadmap.epri.com/)
 
@@ -94,13 +95,17 @@ This data was selected second since it has already been vetted for EV infrastruc
 
 According to their [FAQ](https://eroadmap.epri.com/docs/eRoadMAP_FAQs_F_11172023.pdf):
 
-> Through a collaborative, anonymous, secure, and transparent process, EPRI worked with a number of analytical partners and data providers to collect both publicly available
-and proprietary data - such as vehicle registrations, trip data and driving patterns, vehicle efficiencies, electrification plans, and state and federal policy. This data was used in
-combination with projected EV adoption in different areas of the country to develop the eRoadMAP estimates.
+> Through a collaborative, anonymous, secure, and transparent process, EPRI worked with a number of analytical partners and data providers to collect both publicly available and proprietary data - such as vehicle registrations, trip data and driving patterns, vehicle efficiencies, electrification plans, and state and federal policy. This data was used in combination with projected EV adoption in different areas of the country to develop the eRoadMAP estimates.
 
-> This tool reflects a combination of both high-confidence data sources and simulations of expected adoption. As EPRI gathers more and more data, the confidence in the
-energy estimates at each hexagon will rise. It should also be noted that generally as one zooms in to smaller and smaller hexagons, the certainty will decrease as the data is
-reliant on the behavior of fewer vehicles rather than an aggregated number"
+> This tool reflects a combination of both high-confidence data sources and simulations of expected adoption. As EPRI gathers more and more data, the confidence in the energy estimates at each hexagon will rise. It should also be noted that generally as one zooms in to smaller and smaller hexagons, the certainty will decrease as the data is reliant on the behavior of fewer vehicles rather than an aggregated number.
+
+Using this tool with the sample above in Latah Valley near Spokane, WA:
+
+![eRoadmap Latah Valley](assets/img/eRoadmap_SpokaneLatahValley.png)
+
+The near-term electricity supply recommended for this hexagon in light duty vehicles is 652 kWh per day. That is a full charge for 11 to 18 vehicles, depending on the type. We see the next nearest station from the out-of-charge event (red circle) is sited at a public library approx. 5 miles away (green circle).
+
+Searching within this closer light orange area for a parking location suitable for public charging, we find only churches and a few small parks. Considering these types of locations will be useful in the next section.
 
 ### Finding Optimum Destinations
 
