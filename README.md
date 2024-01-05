@@ -1,8 +1,13 @@
 # EV Charge Station Optimizer
 
-## Purpose
+## Purpose and Motivation
 
 This project uses machine learning optimization techniques and the Google Maps API to find the ideal location for new electric vehicle charging infrastructure.
+
+According to government data cited in a late Dec 2023 [article in the WSJ](https://www.wsj.com/business/autos/investors-sour-on-ev-charging-companies-f6318bfb), the U.S. has around 159,000 public charging ports now at 60,000 locations. The supply required to meet EV demand over the next 5 years varies from a tripling to a 10x increase:
+> President Biden aims to have 500,000 public chargers in the ground by 2030. Consulting firm McKinsey estimates that around 1.5 million public chargers would be needed by then if half of car sales are electric.
+
+Also cited in this article are the difficulties EV charging companies have remaining economically viable during this classic "chicken-and-egg" problem of supplying the EV charging infrastructure needed in advance of demand for EVs in order to reduce range anxiety and consumers' reluctance to commit to an EV purchase. However, the capital investment required to build out charging locations before consumers are buying electricity places a heavy burden on the for-profit EVSE enterprise. Placing this infrastructure in strategically optimized locations could help them acheive return on their investment in the near term.
 
 ## Sample Script Run
 An example in `src/main.py` after loading lat/long values from a .csv file in Google Cloud Storage into a Pandas dataframe
@@ -22,10 +27,10 @@ An example in `src/main.py` after loading lat/long values from a .csv file in Go
     distance = my_gmap_client.find_closest_station(radius, search_loc) # could accept default lat/lng from init
     print(f'Distance to nearest station: {str(distance/1000)} km')
 ```
-Data elements include: `[VEH_YEAR, VEH_MAKE, VEH_MODEL, ERS_LATITUDE, ERS_LONGITUDE, ERS_NEAR_CITY, TOW_DEST_LAT, TOW_DEST_LON]`
+The raw data elements (source described below) include: `VEHICLE YEAR MAKE MODEL, TOW FROM LATITUDE LONGITUDE, NEAREST CITY`
 The first sample data element is:
 ```python
-['2018', 'NISSAN', 'LEAF', 47.61453	-117.42536, 'Spokane WA', 47.66351, -117.41239]
+['2018 NISSAN LEAF', 47.61453 -117.42536, 'Spokane WA']
 ```
 The next-nearest station search algorithm runs in `main.py` looking in 10km radius and outputs the following:
 ```
@@ -57,16 +62,16 @@ connector_aggregation {
 }
 ```
 
-Verifying this route directly by putting in the same lat/lng values and asking for directions to "ev station":
+Verifying this route directly by putting in the same `LAT/LNG` values and asking for directions to an "ev station":
 
 ![Google Maps Spokane WA](assets/img/gmaps_route_SpokaneOutofcharge.png)
 
-We see that 14.441 km matches the web result of 9.0 miles. Note also it appears to be a public library (useful later for searching for alternate EV charging sites).
+We see that `14.441 km` matches the web result of `9.0 mi`. Note also it appears to be a public library (useful later for searching for alternate EV charging sites).
 
 ![Google Maps Hive](assets/img/gmaps_route_SpokaneChargepoint.png)
 
 ## Data Sources
-Starting data points come from several sources:
+Optimum EV Charging Infrastructure locations comes from several sources.
 
 ### Points of Origin
 
