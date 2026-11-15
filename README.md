@@ -10,6 +10,8 @@ According to government data cited in a late Dec 2023 [article in the WSJ](https
 Also cited in this article are the difficulties EV charging companies have remaining economically viable during this classic "chicken-and-egg" problem of supplying the EV charging infrastructure needed in advance of demand for EVs in order to reduce range anxiety and consumers' reluctance to commit to an EV purchase. However, the capital investment required to build out charging locations before consumers are buying electricity places a heavy burden on the for-profit EVSE enterprise. Placing this infrastructure in strategically optimized locations could help them acheive return on their investment in the near term.
 
 ## Sample Script Run
+See [Running Scripts](#getting-started) to learn about setting up Poetry.
+
 An example in `src/main.py` after loading lat/long values from a .csv file in Google Cloud Storage into a Pandas dataframe
 ```python
     # get csv data from Cloud Storage
@@ -177,7 +179,7 @@ This is important because, without a compatible connector or an adapter in the v
 
 The AFDC has an [interactive map](https://afdc.energy.gov/fuels/electricity_locations.html#/find/route?fuel=ELEC&start=wenatchee,%20wa&end=spokane,%20wa) showing nearest stations along a route. This is also available via API so it can be referenced as a test validation for the results found above via Google Maps API.
 
-## Getting Started
+## Getting Started Running Scripts
 
 #### Installation of Python Packages
 
